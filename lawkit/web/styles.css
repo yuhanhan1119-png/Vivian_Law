@@ -200,6 +200,7 @@ button { font: inherit; cursor: pointer; }
 
 .hit__head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
 .hit__law { font-size: 13px; color: var(--ink-soft); }
+.hit__version { font-size: 11px; color: var(--ink-faint); }
 .hit__label { font-size: 15px; font-weight: 700; }
 .hit__path { font-size: 11px; color: var(--ink-faint); margin: 4px 0 0; }
 .hit__snippet { font-size: 14px; line-height: 1.7; margin: 8px 0 0; color: var(--ink-soft); }
@@ -316,8 +317,8 @@ label.field > span { display: block; margin-bottom: 6px; font-weight: 600; }
 .diff-ins { background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok); border-radius: 3px; }
 .diff-del { background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger); text-decoration: line-through; border-radius: 3px; }
 
-.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 10px; }
-.stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; text-align: center; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)); gap: 8px; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 8px; text-align: center; }
 .stat__value { font-size: 20px; font-weight: 700; }
 .stat__label { font-size: 11px; color: var(--ink-faint); margin-top: 2px; }
 

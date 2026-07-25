@@ -1,0 +1,4 @@
+{
+  "_說明": "把這個檔案複製成 lawkit.json 放在專案根目錄，就能固定知識庫位置（優先順序低於 --data-dir 與 LAWKIT_HOME）",
+  "data_dir": "D:\\Vivian_Law"
+}

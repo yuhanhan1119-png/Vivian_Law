@@ -25,6 +25,14 @@ const toast = (message, ms = 2200) => {
   toast._timer = setTimeout(() => { node.hidden = true; }, ms);
 };
 
+const formatTimestamp = (value) => {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value).slice(0, 16).replace('T', ' ');
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
 const settings = {
   data: { theme: 'auto', readingSize: 17, autoBundle: true },
   load() {
@@ -115,6 +123,10 @@ const state = {
 class OfflineError extends Error {}
 
 async function request(path, options = {}) {
+  if (navigator.onLine === false) {
+    setOnline(false);
+    throw new OfflineError('裝置目前離線');
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 8000);
   try {
@@ -123,6 +135,11 @@ async function request(path, options = {}) {
       signal: controller.signal,
       headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
     });
+    // Service Worker 在離線時會回 503，屬於「連不上」而非伺服器錯誤
+    if (response.status === 503) {
+      setOnline(false);
+      throw new OfflineError('目前無法連上伺服器');
+    }
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(payload.error || `伺服器回應 ${response.status}`);
     setOnline(true);
@@ -288,6 +305,7 @@ const api = {
               article_id: article.id,
               law_id: law.id,
               law_name: law.name,
+              law_version: law.version_label || '',
               label: article.label,
               division_path: article.division_path,
               snippet: makeSnippet(article.text, query),
@@ -737,7 +755,9 @@ async function viewSearch(params) {
     ${result.count ? `<div class="list">${result.hits.map((hit) => `
       <a class="card card--tap" href="#/article/${hit.article_id}">
         <div class="hit__head">
-          <span class="hit__law">${escapeHtml(hit.law_name)}</span>
+          <span class="hit__law">${escapeHtml(hit.law_name)}
+            ${hit.law_version ? `<span class="hit__version">${escapeHtml(hit.law_version)}</span>` : ''}
+          </span>
           <span class="hit__label">${escapeHtml(hit.label)}</span>
         </div>
         ${hit.division_path ? `<p class="hit__path">${escapeHtml(hit.division_path)}</p>` : ''}
@@ -776,7 +796,7 @@ async function viewOrganize() {
       <a class="card card--tap" href="#/article/${note.article_id}">
         <div class="hit__head"><span class="hit__law">${escapeHtml(note.law_name)}</span><span class="hit__label">${escapeHtml(note.label)}</span></div>
         <p class="hit__snippet">${escapeHtml(note.body.slice(0, 90))}</p>
-        <p class="hit__path">${escapeHtml(note.updated_at)}</p>
+        <p class="hit__path">${escapeHtml(formatTimestamp(note.updated_at))}</p>
       </a>`).join('')}</div>` : '<div class="card"><p class="hit__snippet">尚無筆記。</p></div>'}
   `);
 }
@@ -948,7 +968,7 @@ async function viewSettings() {
     <div class="section-title"><span>離線資料</span></div>
     <div class="card">
       <p class="hit__snippet">
-        ${state.bundleAt ? `目前離線資料產生於 ${escapeHtml(state.bundleAt)}` : '尚未下載離線資料。'}
+        ${state.bundleAt ? `目前離線資料產生於 ${escapeHtml(formatTimestamp(state.bundleAt))}` : '尚未下載離線資料。'}
       </p>
       <div class="button-row" style="margin-top:10px">
         <button class="button button--small" data-action="sync-bundle">更新離線資料</button>

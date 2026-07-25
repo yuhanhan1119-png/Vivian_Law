@@ -144,6 +144,7 @@ class SearchHit:
     label: str
     division_path: str
     snippet: str
+    law_version: str = ""
     score: float = 0.0
 
     def to_dict(self) -> dict:
@@ -151,6 +152,7 @@ class SearchHit:
             "article_id": self.article_id,
             "law_id": self.law_id,
             "law_name": self.law_name,
+            "law_version": self.law_version,
             "label": self.label,
             "division_path": self.division_path,
             "snippet": self.snippet,
@@ -503,7 +505,7 @@ class LawStore:
 
         sql = f"""
             SELECT DISTINCT a.id, a.law_id, a.label, a.division_path, a.text,
-                   l.name AS law_name, {score} AS score
+                   l.name AS law_name, l.version_label, {score} AS score
             FROM articles a JOIN laws l ON l.id = a.law_id{joins}
             WHERE {' AND '.join(where)}
             ORDER BY {order} LIMIT ?
@@ -516,6 +518,7 @@ class LawStore:
                 article_id=row["id"],
                 law_id=row["law_id"],
                 law_name=row["law_name"],
+                law_version=row["version_label"] or "",
                 label=row["label"],
                 division_path=row["division_path"],
                 snippet=make_snippet(row["text"], term),

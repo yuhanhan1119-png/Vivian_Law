@@ -49,14 +49,22 @@ _LAW_PREFIX_TRIM = re.compile(
     r"前|後|本條|規定|所定|所稱|視為|處|明定|另|如|於|以|對|向|受|至|有|無|為|者|並|及其|包括)+"
 )
 
+#: 判斷引用關係的規則，順序即優先順序。以正則比對，避免「刪除」被當成「除外」。
 _RELATION_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
-    ("準用", ("準用", "類推適用")),
-    ("除外", ("除外", "不適用", "不在此限", "除")),
-    ("適用", ("適用",)),
-    ("依據", ("依", "依照", "依據", "按")),
-    ("參照", ("參照", "參酌")),
-    ("處罰", ("處", "罰", "科", "沒收")),
+    ("準用", (r"準用", r"類推適用")),
+    ("除外", (r"不適用", r"除外", r"不在此限", r"除[^，。；]{0,12}外")),
+    ("適用", (r"適用",)),
+    ("依據", (r"依照", r"依據", r"依", r"按")),
+    ("參照", (r"參照", r"參酌")),
+    ("處罰", (r"處.{0,6}罰", r"罰鍰", r"罰金", r"處.{0,6}元", r"沒收", r"懲處")),
 )
+
+_RELATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = tuple(
+    (relation, re.compile("|".join(keywords))) for relation, keywords in _RELATION_RULES
+)
+
+#: 句子邊界：判斷關係時只看同一句，避免抓到上一句的「不在此限」
+_SENTENCE_BREAK = re.compile(r"[。；\n]")
 
 #: 關係的中文說明，供介面顯示
 RELATION_LABELS = {
@@ -150,12 +158,17 @@ def _normalize_law_name(raw: str | None) -> tuple[str | None, bool, str]:
 
 
 def _detect_relation(text: str, start: int, end: int, extra_before: str = "") -> str:
-    before = text[max(0, start - 14) : start] + extra_before
-    after = text[end : end + 10]
-    for relation, keywords in _RELATION_RULES:
-        for keyword in keywords:
-            if keyword in before or keyword in after:
-                return relation
+    """依引用前後文判斷關係；``extra_before`` 是被法規名稱吃掉的關係詞。"""
+    breaks = [match.end() for match in _SENTENCE_BREAK.finditer(text, 0, start)]
+    before = text[breaks[-1] if breaks else 0 : start] + extra_before
+
+    tail = text[end : end + 24]
+    sentence_end = _SENTENCE_BREAK.search(tail)
+    after = tail[: sentence_end.start()] if sentence_end else tail
+
+    for relation, pattern in _RELATION_PATTERNS:
+        if pattern.search(before) or pattern.search(after):
+            return relation
     return "引用"
 
 

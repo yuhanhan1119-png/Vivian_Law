@@ -106,6 +106,13 @@ class SearchTests(StoreTestCase):
         self.assertTrue(hits)
         self.assertIn("184", hits[0].label)
         self.assertIn("【損害賠償】", hits[0].snippet)
+        self.assertEqual(hits[0].law_version, "民國 110 年 01 月 13 日")
+
+    def test_search_distinguishes_versions(self):
+        self.import_sample("示範資料保護法-舊版.txt")
+        self.import_sample("示範資料保護法-新版.txt")
+        versions = {hit.law_version for hit in self.store.search("准駁之決定")}
+        self.assertEqual(len(versions), 2)
 
     def test_short_term_falls_back_to_like(self):
         hits = self.store.search("習慣")

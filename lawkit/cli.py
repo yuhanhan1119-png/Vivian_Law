@@ -17,7 +17,7 @@ from . import __version__
 from .config import ENV_VAR, Workspace
 from .diff import diff_law_versions, render_diff_text
 from .exporter import EXPORTER_DESCRIPTIONS, EXPORTER_EXTENSIONS, export
-from .numerals import parse_article_number
+from .numerals import format_article_label, parse_article_number
 from .parser import parse_file
 from .storage import LawStore
 
@@ -252,7 +252,8 @@ def cmd_show(args: argparse.Namespace) -> int:
         for ref in article["outgoing"]:
             target = ref["target_law"] or law["name"]
             mark = "→" if ref["to_article_id"] else "·"
-            echo(f"  {mark} [{ref['relation']}] {target} 第 {ref['target_article']} 條　{ref['raw_text']}")
+            label = format_article_label(ref["target_article"], ref["target_sub"])
+            echo(f"  {mark} [{ref['relation']}] {target} {label}　{ref['raw_text']}")
     if article["incoming"]:
         echo("-" * 40)
         echo("被引用於：")
@@ -279,7 +280,8 @@ def cmd_search(args: argparse.Namespace) -> int:
     if not hits:
         echo("沒有符合的條文。")
     for hit in hits:
-        echo(f"{hit.law_name} {hit.label}　#{hit.article_id}")
+        version = f"（{hit.law_version}）" if hit.law_version else ""
+        echo(f"{hit.law_name}{version} {hit.label}　#{hit.article_id}")
         if hit.division_path:
             echo(f"  {hit.division_path}")
         echo(f"  {hit.snippet}")
@@ -310,16 +312,12 @@ def cmd_refs(args: argparse.Namespace) -> int:
             if args.incoming:
                 echo(f"← [{ref['relation']}] {ref['from_law_name']} {ref['from_label']}　{ref['raw_text']}")
             else:
-                echo(
-                    f"→ [{ref['relation']}] {ref['target_law'] or law['name']}"
-                    f" 第 {ref['target_article']} 條　{ref['raw_text']}"
-                )
+                label = format_article_label(ref["target_article"], ref["target_sub"])
+                echo(f"→ [{ref['relation']}] {ref['target_law'] or law['name']} {label}　{ref['raw_text']}")
     else:
         for row in store.reference_report(law["id"]):
-            echo(
-                f"{row['from_label']} → [{row['relation']}]"
-                f" {row['target_law'] or '本法'} 第 {row['target_article']} 條"
-            )
+            label = format_article_label(row["target_article"], row["target_sub"])
+            echo(f"{row['from_label']} → [{row['relation']}] {row['target_law'] or '本法'} {label}")
     store.close()
     return 0
 
