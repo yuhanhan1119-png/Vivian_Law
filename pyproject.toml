@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lawkit"
+version = "0.1.0"
+description = "法規整理工具：解析法規條文、全文檢索、交互參照、修法比對，並提供可安裝的 App 介面"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Vivian_Law" }]
+keywords = ["law", "legal", "taiwan", "statute", "parser", "pwa"]
+
+# 刻意不依賴任何第三方套件：只用 Python 標準函式庫，安裝與離線使用都最單純。
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+law = "lawkit.cli:main"
+lawkit = "lawkit.cli:main"
+
+[tool.setuptools]
+packages = ["lawkit"]
+
+[tool.setuptools.package-data]
+lawkit = ["web/*", "web/icons/*", "web/data/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

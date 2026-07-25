@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# 法規整理工具（macOS / Linux 命令列進入點）
+# 用法：./law import samples/民法-節錄.txt
+#       ./law serve
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec python3 "$SCRIPT_DIR/law.py" "$@"
