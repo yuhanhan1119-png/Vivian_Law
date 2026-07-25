@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# 知識庫與衍生資料（各人本機不同，不進版控）
+*.db
+*.db-wal
+*.db-shm
+lawkit.json
+lawkit/web/data/bundle.json
+exports/
+bundles/
+backups/
+sources/
+
+# 編輯器與系統
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
