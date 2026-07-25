@@ -146,6 +146,7 @@ class SearchHit:
     snippet: str
     law_version: str = ""
     score: float = 0.0
+    fuzzy: bool = False
 
     def to_dict(self) -> dict:
         return {
@@ -157,6 +158,7 @@ class SearchHit:
             "division_path": self.division_path,
             "snippet": self.snippet,
             "score": self.score,
+            "fuzzy": self.fuzzy,
         }
 
 
@@ -467,12 +469,37 @@ class LawStore:
         tags: Sequence[str] | None = None,
         limit: int = 50,
         record: bool = False,
+        fuzzy: bool = True,
     ) -> list[SearchHit]:
-        """全文檢索。三字以上使用 FTS5 trigram 索引，較短則退回 LIKE 比對。"""
+        """全文檢索。
+
+        三字以上使用 FTS5 trigram 索引，較短則退回 LIKE 比對。
+        完全相符找不到時，若 ``fuzzy`` 為真會再做一次「字序寬鬆比對」，
+        讓「誠實信用」也能找到條文中的「誠實及信用」。
+        """
         term = query.strip()
         if not term:
             return []
 
+        hits = self._search_exact(term, law_ids=law_ids, tags=tags, limit=limit)
+        if not hits and fuzzy and 2 <= len(term) <= 10:
+            hits = self._search_loose(term, law_ids=law_ids, tags=tags, limit=limit)
+        if record:
+            self.connection.execute(
+                "INSERT INTO search_history (query, hits, created_at) VALUES (?, ?, ?)",
+                (term, len(hits), _now()),
+            )
+            self.connection.commit()
+        return hits
+
+    def _search_exact(
+        self,
+        term: str,
+        *,
+        law_ids: Sequence[int] | None,
+        tags: Sequence[str] | None,
+        limit: int,
+    ) -> list[SearchHit]:
         params: list[Any] = []
         joins = ""
         where: list[str] = []
@@ -512,8 +539,7 @@ class LawStore:
         """
         params.append(limit)
         rows = self.connection.execute(sql, params).fetchall()
-
-        hits = [
+        return [
             SearchHit(
                 article_id=row["id"],
                 law_id=row["law_id"],
@@ -526,13 +552,59 @@ class LawStore:
             )
             for row in rows
         ]
-        if record:
-            self.connection.execute(
-                "INSERT INTO search_history (query, hits, created_at) VALUES (?, ?, ?)",
-                (term, len(hits), _now()),
+
+    def _search_loose(
+        self,
+        term: str,
+        *,
+        law_ids: Sequence[int] | None,
+        tags: Sequence[str] | None,
+        limit: int,
+    ) -> list[SearchHit]:
+        """字序寬鬆比對：字元順序相同即可，中間允許插入其他文字。"""
+        pattern = "%" + "%".join(term) + "%"
+        params: list[Any] = [pattern]
+        joins = ""
+        where = ["a.text LIKE ?"]
+
+        if law_ids:
+            placeholders = ",".join("?" * len(law_ids))
+            where.append(f"a.law_id IN ({placeholders})")
+            params.extend(law_ids)
+        if tags:
+            placeholders = ",".join("?" * len(tags))
+            joins = (
+                " JOIN article_tags at ON at.article_id = a.id"
+                " JOIN tags t ON t.id = at.tag_id"
             )
-            self.connection.commit()
-        return hits
+            where.append(f"t.name IN ({placeholders})")
+            params.extend(tags)
+        params.append(limit)
+
+        rows = self.connection.execute(
+            f"""
+            SELECT DISTINCT a.id, a.law_id, a.label, a.division_path, a.text,
+                   l.name AS law_name, l.version_label
+            FROM articles a JOIN laws l ON l.id = a.law_id{joins}
+            WHERE {' AND '.join(where)}
+            ORDER BY a.law_id, a.sort_key LIMIT ?
+            """,
+            params,
+        ).fetchall()
+
+        return [
+            SearchHit(
+                article_id=row["id"],
+                law_id=row["law_id"],
+                law_name=row["law_name"],
+                law_version=row["version_label"] or "",
+                label=row["label"],
+                division_path=row["division_path"],
+                snippet=make_snippet(row["text"], term[0]),
+                fuzzy=True,
+            )
+            for row in rows
+        ]
 
     def search_history(self, limit: int = 10) -> list[dict]:
         rows = self.connection.execute(

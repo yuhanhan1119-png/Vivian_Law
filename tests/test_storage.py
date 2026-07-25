@@ -132,6 +132,27 @@ class SearchTests(StoreTestCase):
         self.assertEqual(len(hits), 1)
         self.assertEqual(hits[0].article_id, article["id"])
 
+    def test_loose_match_when_no_exact_hit(self):
+        # 條文寫的是「誠實及信用方法」，使用者常打「誠實信用」
+        exact = self.store.search("誠實信用", fuzzy=False)
+        self.assertEqual(exact, [])
+        loose = self.store.search("誠實信用")
+        self.assertTrue(loose)
+        self.assertTrue(loose[0].fuzzy)
+        self.assertEqual(loose[0].label, "第 148 條")
+
+    def test_exact_match_is_not_marked_fuzzy(self):
+        hits = self.store.search("誠實及信用")
+        self.assertTrue(hits)
+        self.assertFalse(hits[0].fuzzy)
+
+    def test_loose_match_respects_law_filter(self):
+        self.import_sample("示範資料保護法-舊版.txt")
+        other = self.store.find_law("示範資料保護法")["id"]
+        # 兩部法規都寫了「誠實及信用」，限定法規後只能出現該法規的條文
+        self.assertTrue(all(hit.law_id == other for hit in self.store.search("誠實信用", law_ids=[other])))
+        self.assertEqual(self.store.search("習慣法理", law_ids=[other]), [])
+
     def test_history_recorded(self):
         self.store.search("誠實信用", record=True)
         history = self.store.search_history()

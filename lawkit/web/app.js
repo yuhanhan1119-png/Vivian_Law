@@ -750,8 +750,11 @@ async function viewSearch(params) {
     .replaceAll('【', '<mark>').replaceAll('】', '</mark>')
     .replaceAll(escapeHtml(query), `<mark>${escapeHtml(query)}</mark>`);
 
+  const fuzzy = result.hits.length > 0 && result.hits[0].fuzzy;
   target.innerHTML = `
     <div class="section-title"><span>結果</span><span>${result.count} 筆</span></div>
+    ${fuzzy ? `<div class="card"><p class="hit__snippet">找不到完全相符的「${escapeHtml(query)}」，
+      以下是字序寬鬆比對的結果（中間允許夾雜其他文字）。</p></div>` : ''}
     ${result.count ? `<div class="list">${result.hits.map((hit) => `
       <a class="card card--tap" href="#/article/${hit.article_id}">
         <div class="hit__head">

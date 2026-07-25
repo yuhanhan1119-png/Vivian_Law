@@ -279,6 +279,8 @@ def cmd_search(args: argparse.Namespace) -> int:
     hits = store.search(args.query, law_ids=law_ids, tags=args.tag, limit=args.limit, record=True)
     if not hits:
         echo("沒有符合的條文。")
+    elif hits[0].fuzzy:
+        echo(f"找不到完全相符的「{args.query}」，以下為字序寬鬆比對結果：\n")
     for hit in hits:
         version = f"（{hit.law_version}）" if hit.law_version else ""
         echo(f"{hit.law_name}{version} {hit.label}　#{hit.article_id}")
