@@ -1,0 +1,27 @@
+{
+  "id": "vivian-law-organizer",
+  "name": "法規整理",
+  "short_name": "法規整理",
+  "description": "把法規條文整理成可檢索、可註記、可比對的知識庫；離線也能查閱。",
+  "lang": "zh-Hant",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#f5f6f8",
+  "theme_color": "#1f3a5f",
+  "categories": ["productivity", "books", "education"],
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "檢索條文", "short_name": "檢索", "url": "./#/search" },
+    { "name": "整理（標籤與筆記）", "short_name": "整理", "url": "./#/organize" },
+    { "name": "匯入法規", "short_name": "匯入", "url": "./#/import" }
+  ]
+}
