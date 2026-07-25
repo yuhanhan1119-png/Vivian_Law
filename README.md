@@ -25,6 +25,25 @@
 
 ---
 
+## 想先試用？下載一個檔案就好
+
+`demo/法規整理-試用版.html` 是**完整的 App 壓成單一檔案**（約 100 KB，已內含範例法規）。
+
+1. 下載這個檔案（在 GitHub 上點檔名 → 右上角 **Download raw file**）
+2. **雙擊開啟**
+
+不需要 Python、不需要伺服器、不需要網路。可以試：瀏覽章節、閱讀條文、點條號跳轉、
+全文檢索、加標籤與筆記、收藏，以及修法比對（示範法規備有新舊兩版）。
+標註會存在該裝置的瀏覽器裡；試用版無法匯入新法規。
+
+整理好自己的知識庫後，也可以隨時把它壓成一個可分享的單檔 App：
+
+```bat
+law standalone -o D:\Vivian_Law\exports\我的法規整理.html
+```
+
+---
+
 ## 快速開始
 
 需要 Python 3.10 以上（Windows 可到 [python.org](https://www.python.org/downloads/) 安裝，安裝時勾選 *Add python.exe to PATH*）。
@@ -155,6 +174,7 @@ law bookmark 民法 184
 law diff 示範資料保護法 --from "民國 108 年 05 月 10 日" --to "民國 112 年 11 月 20 日"
 law export markdown --law 民法     # 也支援 json / csv / refs / text / bundle
 law bundle --for-app        # 產生 App 離線資料包
+law standalone              # 把知識庫壓成一個可分享的單檔 App
 law stats                   # 知識庫統計
 law backup                  # 備份資料庫
 law serve --port 8383       # 啟動 App
@@ -204,9 +224,11 @@ lawkit/
 ├── exporter.py    匯出格式（可註冊擴充）
 ├── cli.py         命令列（指令可註冊擴充）
 ├── server.py      HTTP API（路由可註冊擴充）
+├── standalone.py  把 App 與資料壓成單一 HTML
 └── web/           App 前端（PWA）
-tests/             139 個測試
+tests/             149 個測試
 samples/           範例法規
+demo/              可直接雙擊試用的單檔版
 ```
 
 ---

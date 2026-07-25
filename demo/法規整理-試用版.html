@@ -1,3 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1f3a5f" />
+<meta name="description" content="法規整理 App：條文結構化、全文檢索、交互參照、標籤筆記與修法比對。" />
+<title>法規整理（試用版）</title>
+
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkxhdyBPcmdhbml6ZXIiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyYjRkNzgiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTUyODQwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPCEtLSB1c2VyU3BhY2VPblVzZT8/Pz8gYm91bmRpbmcgYm94ID8/Pz8/Pz8/Pz8/Pz8/Pz8/IC0tPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjI1NiIgeTE9IjEzMCIgeDI9IjI1NiIgeTI9IjM3MCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2YyZGNhZSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNjMjhmNGMiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgoKICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExNiIgZmlsbD0idXJsKCNiZykiLz4KCiAgPCEtLSBzdGF0dXRlIHBhZ2UgYmVoaW5kIHRoZSBzY2FsZSAtLT4KICA8cmVjdCB4PSIxNTAiIHk9Ijg4IiB3aWR0aD0iMjEyIiBoZWlnaHQ9IjM0NCIgcng9IjIwIiBmaWxsPSIjZjRmMWVhIiBvcGFjaXR5PSIuMTQiLz4KICA8ZyBmaWxsPSIjZjRmMWVhIiBvcGFjaXR5PSIuNDUiPgogICAgPHJlY3QgeD0iMTgyIiB5PSIzODQiIHdpZHRoPSIxNDgiIGhlaWdodD0iMTIiIHJ4PSI2Ii8+CiAgICA8cmVjdCB4PSIyMDMiIHk9IjQxMCIgd2lkdGg9IjEwNiIgaGVpZ2h0PSIxMiIgcng9IjYiLz4KICA8L2c+CgogIDwhLS0gYmFsYW5jZSBzY2FsZSAtLT4KICA8ZyBzdHJva2U9InVybCgjZ29sZCkiIHN0cm9rZS13aWR0aD0iMTUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZmlsbD0ibm9uZSI+CiAgICA8cGF0aCBkPSJNMjU2IDE1MHYxODYiLz4KICAgIDxwYXRoIGQ9Ik0xMzIgMTc4aDI0OCIvPgogICAgPHBhdGggZD0iTTEzMiAxNzh2NTYiLz4KICAgIDxwYXRoIGQ9Ik0zODAgMTc4djU2Ii8+CiAgICA8cGF0aCBkPSJNMjA0IDM1NmgxMDQiLz4KICAgIDxwYXRoIGQ9Ik05MiAyMzRhNDAgNDAgMCAwIDAgODAgMCIvPgogICAgPHBhdGggZD0iTTM0MCAyMzRhNDAgNDAgMCAwIDAgODAgMCIvPgogIDwvZz4KICA8Y2lyY2xlIGN4PSIyNTYiIGN5PSIxNTAiIHI9IjIwIiBmaWxsPSJ1cmwoI2dvbGQpIi8+Cjwvc3ZnPgo=" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkxhdyBPcmdhbml6ZXIiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyYjRkNzgiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTUyODQwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPCEtLSB1c2VyU3BhY2VPblVzZT8/Pz8gYm91bmRpbmcgYm94ID8/Pz8/Pz8/Pz8/Pz8/Pz8/IC0tPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjI1NiIgeTE9IjEzMCIgeDI9IjI1NiIgeTI9IjM3MCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2YyZGNhZSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNjMjhmNGMiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgoKICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExNiIgZmlsbD0idXJsKCNiZykiLz4KCiAgPCEtLSBzdGF0dXRlIHBhZ2UgYmVoaW5kIHRoZSBzY2FsZSAtLT4KICA8cmVjdCB4PSIxNTAiIHk9Ijg4IiB3aWR0aD0iMjEyIiBoZWlnaHQ9IjM0NCIgcng9IjIwIiBmaWxsPSIjZjRmMWVhIiBvcGFjaXR5PSIuMTQiLz4KICA8ZyBmaWxsPSIjZjRmMWVhIiBvcGFjaXR5PSIuNDUiPgogICAgPHJlY3QgeD0iMTgyIiB5PSIzODQiIHdpZHRoPSIxNDgiIGhlaWdodD0iMTIiIHJ4PSI2Ii8+CiAgICA8cmVjdCB4PSIyMDMiIHk9IjQxMCIgd2lkdGg9IjEwNiIgaGVpZ2h0PSIxMiIgcng9IjYiLz4KICA8L2c+CgogIDwhLS0gYmFsYW5jZSBzY2FsZSAtLT4KICA8ZyBzdHJva2U9InVybCgjZ29sZCkiIHN0cm9rZS13aWR0aD0iMTUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZmlsbD0ibm9uZSI+CiAgICA8cGF0aCBkPSJNMjU2IDE1MHYxODYiLz4KICAgIDxwYXRoIGQ9Ik0xMzIgMTc4aDI0OCIvPgogICAgPHBhdGggZD0iTTEzMiAxNzh2NTYiLz4KICAgIDxwYXRoIGQ9Ik0zODAgMTc4djU2Ii8+CiAgICA8cGF0aCBkPSJNMjA0IDM1NmgxMDQiLz4KICAgIDxwYXRoIGQ9Ik05MiAyMzRhNDAgNDAgMCAwIDAgODAgMCIvPgogICAgPHBhdGggZD0iTTM0MCAyMzRhNDAgNDAgMCAwIDAgODAgMCIvPgogIDwvZz4KICA8Y2lyY2xlIGN4PSIyNTYiIGN5PSIxNTAiIHI9IjIwIiBmaWxsPSJ1cmwoI2dvbGQpIi8+Cjwvc3ZnPgo=" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="法規整理" />
+<style>
+/* 法規整理 App 樣式：手機優先，桌機自動加寬 */
+
+:root {
+  --ink: #16202c;
+  --ink-soft: #55637a;
+  --ink-faint: #8b98ab;
+  --paper: #f5f6f8;
+  --card: #ffffff;
+  --line: #e2e6ec;
+  --brand: #1f3a5f;
+  --brand-soft: #e8eef7;
+  --accent: #9a6b2f;
+  --danger: #b3261e;
+  --ok: #1f6b45;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(22, 32, 44, .06), 0 8px 24px rgba(22, 32, 44, .06);
+  --tabbar-height: 58px;
+  --reading-size: 17px;
+  --reading-line: 1.9;
+  color-scheme: light dark;
+}
+
+[data-theme="dark"] {
+  --ink: #e7ecf3;
+  --ink-soft: #a8b4c6;
+  --ink-faint: #7c8798;
+  --paper: #12161c;
+  --card: #1a2027;
+  --line: #2a323d;
+  --brand: #8fb4e8;
+  --brand-soft: #1e2936;
+  --accent: #d5a869;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "Hiragino Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: contain;
+}
+
+body { padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom)); }
+
+a { color: var(--brand); text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+
+/* ------------------------------------------------------------ 頂部列 */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: calc(env(safe-area-inset-top) + 12px) 14px 12px;
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter: saturate(150%) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.topbar__titles { flex: 1; min-width: 0; }
+.topbar__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topbar__subtitle {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topbar__back {
+  border: none;
+  background: var(--brand-soft);
+  color: var(--brand);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 1;
+  padding: 0 0 3px;
+}
+.topbar__actions { display: flex; align-items: center; gap: 8px; }
+.icon-button {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink-soft);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 15px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  white-space: nowrap;
+}
+.badge--offline { background: #fdf1d6; color: #8a5a00; }
+[data-theme="dark"] .badge--offline { background: #3a2f18; color: #e6bd6a; }
+
+/* ------------------------------------------------------------ 版面 */
+.view { padding: 14px 14px 24px; max-width: 860px; margin: 0 auto; }
+.view:focus { outline: none; }
+.loading, .empty {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 14px;
+}
+
+.section-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 22px 2px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  letter-spacing: .6px;
+}
+.section-title:first-child { margin-top: 4px; }
+.section-title a { font-size: 12px; font-weight: 500; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.card--tap { display: block; color: inherit; transition: transform .12s ease; }
+.card--tap:active { transform: scale(.99); }
+
+.list { display: flex; flex-direction: column; gap: 10px; }
+
+.law-card__name { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+.law-card__meta { font-size: 12px; color: var(--ink-faint); display: flex; flex-wrap: wrap; gap: 8px; }
+.law-card__chips { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+.chip {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: none;
+}
+.chip--muted { background: transparent; color: var(--ink-faint); border: 1px solid var(--line); }
+.chip--accent { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+.chip--del { background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger); }
+
+/* ------------------------------------------------------------ 檢索 */
+.searchbar { display: flex; gap: 8px; margin-bottom: 12px; }
+.searchbar input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  font-size: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+}
+.searchbar input:focus { outline: 2px solid var(--brand-soft); border-color: var(--brand); }
+
+.button {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--brand);
+  color: #fff;
+}
+.button--ghost { background: var(--card); color: var(--brand); border: 1px solid var(--line); }
+.button--block { display: block; width: 100%; }
+.button--small { padding: 8px 12px; font-size: 13px; border-radius: 10px; }
+.button:disabled { opacity: .5; }
+
+.button-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.hit__head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.hit__law { font-size: 13px; color: var(--ink-soft); }
+.hit__version { font-size: 11px; color: var(--ink-faint); }
+.hit__label { font-size: 15px; font-weight: 700; }
+.hit__path { font-size: 11px; color: var(--ink-faint); margin: 4px 0 0; }
+.hit__snippet { font-size: 14px; line-height: 1.7; margin: 8px 0 0; color: var(--ink-soft); }
+mark { background: color-mix(in srgb, var(--accent) 28%, transparent); color: inherit; padding: 0 2px; border-radius: 3px; }
+
+/* ------------------------------------------------------------ 章節樹 */
+.tree { display: flex; flex-direction: column; gap: 2px; }
+.tree__division {
+  font-weight: 700;
+  color: var(--brand);
+  padding: 10px 0 4px;
+  font-size: 14px;
+}
+.tree__division[data-level="2"] { font-size: 13.5px; }
+.tree__division[data-level="3"] { font-size: 13px; color: var(--ink-soft); }
+.tree__article {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: inherit;
+  align-items: baseline;
+}
+.tree__article:active { background: var(--brand-soft); }
+.tree__label { font-weight: 700; font-size: 14px; white-space: nowrap; }
+.tree__preview {
+  font-size: 13px;
+  color: var(--ink-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tree__group { padding-left: 10px; border-left: 2px solid var(--line); margin-left: 4px; display: flex; flex-direction: column; gap: 6px; }
+
+/* ------------------------------------------------------------ 條文 */
+.article__label { font-size: 20px; font-weight: 700; margin: 0; }
+.article__path { font-size: 12px; color: var(--ink-faint); margin: 6px 0 0; }
+.article__body {
+  font-size: var(--reading-size);
+  line-height: var(--reading-line);
+  margin-top: 14px;
+  font-family: "Noto Serif TC", "Songti TC", "PMingLiU", Georgia, serif;
+}
+.paragraph { margin: 0 0 12px; text-indent: 2em; }
+.paragraph__index {
+  display: inline-block;
+  text-indent: 0;
+  margin-right: 6px;
+  font-size: 12px;
+  color: var(--ink-faint);
+  font-family: system-ui, sans-serif;
+  vertical-align: 2px;
+}
+.items { margin: 6px 0 12px; padding-left: 2em; display: flex; flex-direction: column; gap: 6px; }
+.item { text-indent: 0; }
+.item--目 { padding-left: 1.6em; color: var(--ink-soft); font-size: .95em; }
+.ref-link {
+  border-bottom: 1px dashed var(--brand);
+  cursor: pointer;
+  color: var(--brand);
+}
+
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+
+.reference { display: flex; gap: 10px; align-items: baseline; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+.reference:last-child { border-bottom: none; }
+.reference__relation {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  white-space: nowrap;
+}
+.reference__relation[data-relation="準用"] { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+.reference__relation[data-relation="除外"] { background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger); }
+.reference__text { flex: 1; min-width: 0; }
+.reference__context { font-size: 12px; color: var(--ink-faint); margin-top: 3px; }
+
+textarea, select, input[type="text"] {
+  width: 100%;
+  padding: 11px 12px;
+  font-size: 15px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  font-family: inherit;
+}
+textarea { min-height: 110px; resize: vertical; line-height: 1.7; }
+label.field { display: block; margin-bottom: 12px; font-size: 13px; color: var(--ink-soft); }
+label.field > span { display: block; margin-bottom: 6px; font-weight: 600; }
+
+.tag-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+.tag-pill button { border: none; background: none; color: inherit; font-size: 14px; line-height: 1; padding: 0; }
+
+/* ------------------------------------------------------------ 比對 */
+.diff-summary { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.diff-change { margin-bottom: 12px; }
+.diff-change__head { display: flex; gap: 8px; align-items: baseline; margin-bottom: 8px; }
+.diff-body { font-size: 15px; line-height: 1.9; }
+.diff-ins { background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok); border-radius: 3px; }
+.diff-del { background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger); text-decoration: line-through; border-radius: 3px; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)); gap: 8px; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 8px; text-align: center; }
+.stat__value { font-size: 20px; font-weight: 700; }
+.stat__label { font-size: 11px; color: var(--ink-faint); margin-top: 2px; }
+
+.path-table { width: 100%; font-size: 12.5px; border-collapse: collapse; }
+.path-table th { text-align: left; color: var(--ink-soft); font-weight: 600; padding: 6px 8px 6px 0; white-space: nowrap; vertical-align: top; }
+.path-table td { padding: 6px 0; color: var(--ink-soft); word-break: break-all; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+/* ------------------------------------------------------------ 底部導覽 */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  height: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  backdrop-filter: saturate(150%) blur(12px);
+  border-top: 1px solid var(--line);
+}
+.tabbar__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 10.5px;
+  color: var(--ink-faint);
+  padding-top: 4px;
+}
+.tabbar__item[aria-current="page"] { color: var(--brand); font-weight: 700; }
+.tabbar__icon { font-size: 19px; line-height: 1; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 16px);
+  transform: translateX(-50%);
+  z-index: 40;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  box-shadow: var(--shadow);
+  max-width: 88vw;
+  text-align: center;
+}
+
+@media (min-width: 760px) {
+  body { padding-bottom: 0; padding-top: 0; }
+  .tabbar { position: sticky; top: 0; bottom: auto; order: -1; height: 54px; padding-bottom: 0; }
+  .tabbar__item { flex-direction: row; gap: 6px; font-size: 13px; }
+  #app { display: flex; flex-direction: column; min-height: 100vh; }
+  .view { padding-top: 20px; }
+}
+
+@media print {
+  .topbar, .tabbar, .toolbar, .toast { display: none !important; }
+  .view { max-width: none; }
+}
+
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <button class="topbar__back" id="back-button" hidden aria-label="返回">‹</button>
+    <div class="topbar__titles">
+      <h1 class="topbar__title" id="page-title">法規整理</h1>
+      <p class="topbar__subtitle" id="page-subtitle">整理你的法規知識庫</p>
+    </div>
+    <div class="topbar__actions">
+      <span class="badge badge--offline" id="offline-badge" hidden>離線</span>
+      <button class="icon-button" id="theme-button" aria-label="切換深淺色">◐</button>
+    </div>
+  </header>
+
+  <main id="view" class="view" tabindex="-1">
+    <div class="loading">載入中…</div>
+  </main>
+
+  <nav class="tabbar" id="tabbar">
+    <a class="tabbar__item" href="#/" data-tab="home"><span class="tabbar__icon">📚</span><span>法規</span></a>
+    <a class="tabbar__item" href="#/search" data-tab="search"><span class="tabbar__icon">🔍</span><span>檢索</span></a>
+    <a class="tabbar__item" href="#/organize" data-tab="organize"><span class="tabbar__icon">🏷️</span><span>整理</span></a>
+    <a class="tabbar__item" href="#/diff" data-tab="diff"><span class="tabbar__icon">⇄</span><span>比對</span></a>
+    <a class="tabbar__item" href="#/settings" data-tab="settings"><span class="tabbar__icon">⚙️</span><span>設定</span></a>
+  </nav>
+
+  <div class="toast" id="toast" hidden></div>
+</div>
+
+<script>window.__LAWKIT_BUNDLE__ = {"generated_at":"2026-07-25T09:36:51+00:00","laws":[{"id":1,"name":"中華民國民法（節錄）","short_name":"","category":"行政＞法務部＞民事目","authority":"","version_label":"民國 110 年 01 月 13 日","amended":"民國 110 年 01 月 13 日","promulgated":"","divisions":[{"id":1,"law_id":1,"seq":0,"parent_seq":null,"kind":"編","number":1,"sub":0,"title":"總則","level":1,"heading":"第一編 總則"},{"id":2,"law_id":1,"seq":1,"parent_seq":0,"kind":"章","number":1,"sub":0,"title":"法例","level":2,"heading":"第一章 法例"},{"id":3,"law_id":1,"seq":2,"parent_seq":0,"kind":"章","number":2,"sub":0,"title":"人","level":2,"heading":"第二章 人"},{"id":4,"law_id":1,"seq":3,"parent_seq":2,"kind":"節","number":1,"sub":0,"title":"自然人","level":3,"heading":"第一節 自然人"},{"id":5,"law_id":1,"seq":4,"parent_seq":0,"kind":"章","number":4,"sub":0,"title":"法律行為","level":2,"heading":"第四章 法律行為"},{"id":6,"law_id":1,"seq":5,"parent_seq":4,"kind":"節","number":1,"sub":0,"title":"通則","level":3,"heading":"第一節 通則"},{"id":7,"law_id":1,"seq":6,"parent_seq":0,"kind":"章","number":7,"sub":0,"title":"權利之行使","level":2,"heading":"第七章 權利之行使"},{"id":8,"law_id":1,"seq":7,"parent_seq":null,"kind":"編","number":2,"sub":0,"title":"債","level":1,"heading":"第二編 債"},{"id":9,"law_id":1,"seq":8,"parent_seq":7,"kind":"章","number":1,"sub":0,"title":"通則","level":2,"heading":"第一章 通則"},{"id":10,"law_id":1,"seq":9,"parent_seq":8,"kind":"節","number":1,"sub":0,"title":"債之發生","level":3,"heading":"第一節 債之發生"},{"id":11,"law_id":1,"seq":10,"parent_seq":9,"kind":"款","number":5,"sub":0,"title":"侵權行為","level":4,"heading":"第五款 侵權行為"}],"articles":[{"id":1,"number":1,"sub":0,"label":"第 1 條","label_chinese":"第一條","division_seq":1,"division_path":"第一編 總則 > 第一章 法例","is_deleted":false,"text":"民事，法律所未規定者，依習慣；無習慣者，依法理。","paragraphs":[{"index":1,"text":"民事，法律所未規定者，依習慣；無習慣者，依法理。","items":[]}],"tags":[],"note":"","refs":[]},{"id":2,"number":2,"sub":0,"label":"第 2 條","label_chinese":"第二條","division_seq":1,"division_path":"第一編 總則 > 第一章 法例","is_deleted":false,"text":"民事所適用之習慣，以不背於公共秩序或善良風俗者為限。","paragraphs":[{"index":1,"text":"民事所適用之習慣，以不背於公共秩序或善良風俗者為限。","items":[]}],"tags":[],"note":"","refs":[]},{"id":3,"number":3,"sub":0,"label":"第 3 條","label_chinese":"第三條","division_seq":1,"division_path":"第一編 總則 > 第一章 法例","is_deleted":false,"text":"依法律規定，有使用文字之必要者，得不由本人自寫，但必須親自簽名。\n如有用印章代簽名者，其蓋章與簽名生同等之效力。\n如以指印、十字或其他符號代簽名者，在文件上，經二人簽名證明，亦與簽名生同等之效力。","paragraphs":[{"index":1,"text":"依法律規定，有使用文字之必要者，得不由本人自寫，但必須親自簽名。","items":[]},{"index":2,"text":"如有用印章代簽名者，其蓋章與簽名生同等之效力。","items":[]},{"index":3,"text":"如以指印、十字或其他符號代簽名者，在文件上，經二人簽名證明，亦與簽名生同等之效力。","items":[]}],"tags":[],"note":"","refs":[]},{"id":4,"number":6,"sub":0,"label":"第 6 條","label_chinese":"第六條","division_seq":3,"division_path":"第一編 總則 > 第二章 人 > 第一節 自然人","is_deleted":false,"text":"人之權利能力，始於出生，終於死亡。","paragraphs":[{"index":1,"text":"人之權利能力，始於出生，終於死亡。","items":[]}],"tags":[],"note":"","refs":[]},{"id":5,"number":12,"sub":0,"label":"第 12 條","label_chinese":"第十二條","division_seq":3,"division_path":"第一編 總則 > 第二章 人 > 第一節 自然人","is_deleted":false,"text":"滿十八歲為成年。","paragraphs":[{"index":1,"text":"滿十八歲為成年。","items":[]}],"tags":[],"note":"","refs":[]},{"id":6,"number":13,"sub":0,"label":"第 13 條","label_chinese":"第十三條","division_seq":3,"division_path":"第一編 總則 > 第二章 人 > 第一節 自然人","is_deleted":false,"text":"未滿七歲之未成年人，無行為能力。\n滿七歲以上之未成年人，有限制行為能力。","paragraphs":[{"index":1,"text":"未滿七歲之未成年人，無行為能力。","items":[]},{"index":2,"text":"滿七歲以上之未成年人，有限制行為能力。","items":[]}],"tags":[],"note":"","refs":[]},{"id":7,"number":71,"sub":0,"label":"第 71 條","label_chinese":"第七十一條","division_seq":5,"division_path":"第一編 總則 > 第四章 法律行為 > 第一節 通則","is_deleted":false,"text":"法律行為，違反強制或禁止之規定者，無效。但其規定並不以之為無效者，不在此限。","paragraphs":[{"index":1,"text":"法律行為，違反強制或禁止之規定者，無效。但其規定並不以之為無效者，不在此限。","items":[]}],"tags":[],"note":"","refs":[]},{"id":8,"number":72,"sub":0,"label":"第 72 條","label_chinese":"第七十二條","division_seq":5,"division_path":"第一編 總則 > 第四章 法律行為 > 第一節 通則","is_deleted":false,"text":"法律行為，有背於公共秩序或善良風俗者，無效。","paragraphs":[{"index":1,"text":"法律行為，有背於公共秩序或善良風俗者，無效。","items":[]}],"tags":[],"note":"","refs":[]},{"id":9,"number":148,"sub":0,"label":"第 148 條","label_chinese":"第一百四十八條","division_seq":6,"division_path":"第一編 總則 > 第七章 權利之行使","is_deleted":false,"text":"權利之行使，不得違反公共利益，或以損害他人為主要目的。\n行使權利，履行義務，應依誠實及信用方法。","paragraphs":[{"index":1,"text":"權利之行使，不得違反公共利益，或以損害他人為主要目的。","items":[]},{"index":2,"text":"行使權利，履行義務，應依誠實及信用方法。","items":[]}],"tags":[],"note":"","refs":[]},{"id":10,"number":184,"sub":0,"label":"第 184 條","label_chinese":"第一百八十四條","division_seq":10,"division_path":"第二編 債 > 第一章 通則 > 第一節 債之發生 > 第五款 侵權行為","is_deleted":false,"text":"因故意或過失，不法侵害他人之權利者，負損害賠償責任。故意以背於善良風俗之方法，加損害於他人者亦同。\n違反保護他人之法律，致生損害於他人者，負賠償責任。但能證明其行為無過失者，不在此限。","paragraphs":[{"index":1,"text":"因故意或過失，不法侵害他人之權利者，負損害賠償責任。故意以背於善良風俗之方法，加損害於他人者亦同。","items":[]},{"index":2,"text":"違反保護他人之法律，致生損害於他人者，負賠償責任。但能證明其行為無過失者，不在此限。","items":[]}],"tags":[],"note":"","refs":[]}],"stats":{"articles":10,"deleted":0,"divisions":11,"references":0,"average_length":40.9,"longest":{"label":"第 3 條","length":98}}},{"id":3,"name":"示範資料保護法","short_name":"","category":"示範用（虛構法規，僅供測試解析與比對功能）","authority":"","version_label":"民國 108 年 05 月 10 日","amended":"","promulgated":"民國 108 年 05 月 10 日","divisions":[{"id":16,"law_id":3,"seq":0,"parent_seq":null,"kind":"章","number":1,"sub":0,"title":"總則","level":2,"heading":"第一章 總則"},{"id":17,"law_id":3,"seq":1,"parent_seq":null,"kind":"章","number":3,"sub":0,"title":"當事人權利","level":2,"heading":"第三章 當事人權利"},{"id":18,"law_id":3,"seq":2,"parent_seq":null,"kind":"章","number":4,"sub":0,"title":"損害賠償及罰則","level":2,"heading":"第四章 損害賠償及罰則"},{"id":19,"law_id":3,"seq":3,"parent_seq":null,"kind":"章","number":5,"sub":0,"title":"附則","level":2,"heading":"第五章 附則"}],"articles":[{"id":28,"number":1,"sub":0,"label":"第 1 條","label_chinese":"第一條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"為規範個人資料之蒐集、處理及利用，保障人格權益，特制定本法。","paragraphs":[{"index":1,"text":"為規範個人資料之蒐集、處理及利用，保障人格權益，特制定本法。","items":[]}],"tags":[],"note":"","refs":[]},{"id":29,"number":2,"sub":0,"label":"第 2 條","label_chinese":"第二條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"本法用詞，定義如下：\n一、個人資料：指自然人之姓名、出生年月日、聯絡方式及其他得以直接或間接識別該個人之資料。\n二、蒐集：指以任何方式取得個人資料。\n三、處理：指為建立或利用個人資料檔案所為之紀錄、輸入、儲存、編輯、更正、複製、檢索、刪除、輸出、連結或內部傳送。\n四、當事人：指個人資料之本人。","paragraphs":[{"index":1,"text":"本法用詞，定義如下：","items":[{"kind":"款","label":"一、","text":"個人資料：指自然人之姓名、出生年月日、聯絡方式及其他得以直接或間接識別該個人之資料。","children":[]},{"kind":"款","label":"二、","text":"蒐集：指以任何方式取得個人資料。","children":[]},{"kind":"款","label":"三、","text":"處理：指為建立或利用個人資料檔案所為之紀錄、輸入、儲存、編輯、更正、複製、檢索、刪除、輸出、連結或內部傳送。","children":[]},{"kind":"款","label":"四、","text":"當事人：指個人資料之本人。","children":[]}]}],"tags":[],"note":"","refs":[]},{"id":30,"number":3,"sub":0,"label":"第 3 條","label_chinese":"第三條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"本法之主管機關如下：\n一、在中央：為數位發展主管機關。\n二、在地方：\n（一）直轄市：為直轄市政府。\n（二）縣（市）：為縣（市）政府。\n第 二 章 蒐集、處理及利用","paragraphs":[{"index":1,"text":"本法之主管機關如下：","items":[{"kind":"款","label":"一、","text":"在中央：為數位發展主管機關。","children":[]},{"kind":"款","label":"二、","text":"在地方：","children":[{"kind":"目","label":"（一）","text":"直轄市：為直轄市政府。","children":[]},{"kind":"目","label":"（二）","text":"縣（市）：為縣（市）政府。","children":[]}]}]},{"index":2,"text":"第 二 章 蒐集、處理及利用","items":[]}],"tags":[],"note":"","refs":[]},{"id":31,"number":5,"sub":0,"label":"第 5 條","label_chinese":"第五條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"個人資料之蒐集、處理或利用，應尊重當事人之權益，依誠實及信用方法為之，不得逾越特定目的之必要範圍。","paragraphs":[{"index":1,"text":"個人資料之蒐集、處理或利用，應尊重當事人之權益，依誠實及信用方法為之，不得逾越特定目的之必要範圍。","items":[]}],"tags":[],"note":"","refs":[]},{"id":32,"number":6,"sub":0,"label":"第 6 條","label_chinese":"第六條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"蒐集個人資料，應向當事人告知下列事項：\n一、蒐集之目的。\n二、個人資料之類別。\n三、利用之期間、地區、對象及方式。\n四、當事人得行使之權利及方式。","paragraphs":[{"index":1,"text":"蒐集個人資料，應向當事人告知下列事項：","items":[{"kind":"款","label":"一、","text":"蒐集之目的。","children":[]},{"kind":"款","label":"二、","text":"個人資料之類別。","children":[]},{"kind":"款","label":"三、","text":"利用之期間、地區、對象及方式。","children":[]},{"kind":"款","label":"四、","text":"當事人得行使之權利及方式。","children":[]}]}],"tags":[],"note":"","refs":[]},{"id":33,"number":7,"sub":0,"label":"第 7 條","label_chinese":"第七條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"有下列情形之一者，得免為前條之告知：\n一、依法律規定得免告知。\n二、為免除當事人之生命、身體、自由或財產上之危險。\n三、告知將妨害公務機關執行法定職務。","paragraphs":[{"index":1,"text":"有下列情形之一者，得免為前條之告知：","items":[{"kind":"款","label":"一、","text":"依法律規定得免告知。","children":[]},{"kind":"款","label":"二、","text":"為免除當事人之生命、身體、自由或財產上之危險。","children":[]},{"kind":"款","label":"三、","text":"告知將妨害公務機關執行法定職務。","children":[]}]}],"tags":[],"note":"","refs":[]},{"id":34,"number":8,"sub":0,"label":"第 8 條","label_chinese":"第八條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"公務機關保有個人資料檔案者，應指定專人辦理安全維護事項，防止個人資料被竊取、竄改、毀損、滅失或洩漏。\n非公務機關準用前項規定。","paragraphs":[{"index":1,"text":"公務機關保有個人資料檔案者，應指定專人辦理安全維護事項，防止個人資料被竊取、竄改、毀損、滅失或洩漏。","items":[]},{"index":2,"text":"非公務機關準用前項規定。","items":[]}],"tags":[],"note":"","refs":[]},{"id":35,"number":9,"sub":0,"label":"第 9 條","label_chinese":"第九條","division_seq":0,"division_path":"第一章 總則","is_deleted":true,"text":"（刪除）","paragraphs":[],"tags":[],"note":"","refs":[]},{"id":36,"number":10,"sub":0,"label":"第 10 條","label_chinese":"第十條","division_seq":1,"division_path":"第三章 當事人權利","is_deleted":false,"text":"當事人就其個人資料得行使下列權利：\n一、查詢或請求閱覽。\n二、請求製給複製本。\n三、請求補充或更正。\n四、請求停止蒐集、處理或利用。\n五、請求刪除。\n前項權利，不得預先拋棄或以特約限制之。","paragraphs":[{"index":1,"text":"當事人就其個人資料得行使下列權利：","items":[{"kind":"款","label":"一、","text":"查詢或請求閱覽。","children":[]},{"kind":"款","label":"二、","text":"請求製給複製本。","children":[]},{"kind":"款","label":"三、","text":"請求補充或更正。","children":[]},{"kind":"款","label":"四、","text":"請求停止蒐集、處理或利用。","children":[]},{"kind":"款","label":"五、","text":"請求刪除。","children":[]}]},{"index":2,"text":"前項權利，不得預先拋棄或以特約限制之。","items":[]}],"tags":[],"note":"","refs":[]},{"id":37,"number":11,"sub":0,"label":"第 11 條","label_chinese":"第十一條","division_seq":1,"division_path":"第三章 當事人權利","is_deleted":false,"text":"非公務機關受理當事人依第十條所為之請求，應於十五日內為准駁之決定；必要時得予延長，延長之期間不得逾十五日。","paragraphs":[{"index":1,"text":"非公務機關受理當事人依第十條所為之請求，應於十五日內為准駁之決定；必要時得予延長，延長之期間不得逾十五日。","items":[]}],"tags":[],"note":"","refs":[{"relation":"依據","target_law":null,"target_article":10,"target_sub":0,"target_paragraph":null,"raw_text":"第十條","to_article_id":36}]},{"id":38,"number":15,"sub":0,"label":"第 15 條","label_chinese":"第十五條","division_seq":2,"division_path":"第四章 損害賠償及罰則","is_deleted":false,"text":"違反本法規定，致當事人受損害者，應負損害賠償責任。但能證明其無故意或過失者，不在此限。\n損害賠償之請求，適用民法第一百九十七條之規定。","paragraphs":[{"index":1,"text":"違反本法規定，致當事人受損害者，應負損害賠償責任。但能證明其無故意或過失者，不在此限。","items":[]},{"index":2,"text":"損害賠償之請求，適用民法第一百九十七條之規定。","items":[]}],"tags":[],"note":"","refs":[{"relation":"適用","target_law":"民法","target_article":197,"target_sub":0,"target_paragraph":null,"raw_text":"適用民法第一百九十七條","to_article_id":null}]},{"id":39,"number":16,"sub":0,"label":"第 16 條","label_chinese":"第十六條","division_seq":2,"division_path":"第四章 損害賠償及罰則","is_deleted":false,"text":"違反第五條至第八條規定者，由主管機關處新臺幣二萬元以上二十萬元以下罰鍰，並令其限期改正；屆期未改正者，按次處罰。","paragraphs":[{"index":1,"text":"違反第五條至第八條規定者，由主管機關處新臺幣二萬元以上二十萬元以下罰鍰，並令其限期改正；屆期未改正者，按次處罰。","items":[]}],"tags":[],"note":"","refs":[{"relation":"處罰","target_law":null,"target_article":5,"target_sub":0,"target_paragraph":null,"raw_text":"第五條至第八條","to_article_id":31},{"relation":"處罰","target_law":null,"target_article":6,"target_sub":0,"target_paragraph":null,"raw_text":"第五條至第八條","to_article_id":32},{"relation":"處罰","target_law":null,"target_article":7,"target_sub":0,"target_paragraph":null,"raw_text":"第五條至第八條","to_article_id":33},{"relation":"處罰","target_law":null,"target_article":8,"target_sub":0,"target_paragraph":null,"raw_text":"第五條至第八條","to_article_id":34}]},{"id":40,"number":17,"sub":0,"label":"第 17 條","label_chinese":"第十七條","division_seq":2,"division_path":"第四章 損害賠償及罰則","is_deleted":false,"text":"公務機關違反第八條第一項規定者，除依前條規定處罰外，並應對其行為人依法懲處。","paragraphs":[{"index":1,"text":"公務機關違反第八條第一項規定者，除依前條規定處罰外，並應對其行為人依法懲處。","items":[]}],"tags":[],"note":"","refs":[{"relation":"除外","target_law":null,"target_article":8,"target_sub":0,"target_paragraph":1,"raw_text":"第八條第一項","to_article_id":34}]},{"id":41,"number":20,"sub":0,"label":"第 20 條","label_chinese":"第二十條","division_seq":3,"division_path":"第五章 附則","is_deleted":false,"text":"本法施行細則，由主管機關定之。","paragraphs":[{"index":1,"text":"本法施行細則，由主管機關定之。","items":[]}],"tags":[],"note":"","refs":[]},{"id":42,"number":21,"sub":0,"label":"第 21 條","label_chinese":"第二十一條","division_seq":3,"division_path":"第五章 附則","is_deleted":false,"text":"本法自公布日施行。","paragraphs":[{"index":1,"text":"本法自公布日施行。","items":[]}],"tags":[],"note":"","refs":[]}],"stats":{"articles":15,"deleted":1,"divisions":4,"references":7,"average_length":60.8,"longest":{"label":"第 2 條","length":147}}},{"id":2,"name":"示範資料保護法","short_name":"","category":"示範用（虛構法規，僅供測試解析與比對功能）","authority":"","version_label":"民國 112 年 11 月 20 日","amended":"民國 112 年 11 月 20 日","promulgated":"","divisions":[{"id":12,"law_id":2,"seq":0,"parent_seq":null,"kind":"章","number":1,"sub":0,"title":"總則","level":2,"heading":"第一章 總則"},{"id":13,"law_id":2,"seq":1,"parent_seq":null,"kind":"章","number":3,"sub":0,"title":"當事人權利","level":2,"heading":"第三章 當事人權利"},{"id":14,"law_id":2,"seq":2,"parent_seq":null,"kind":"章","number":4,"sub":0,"title":"損害賠償及罰則","level":2,"heading":"第四章 損害賠償及罰則"},{"id":15,"law_id":2,"seq":3,"parent_seq":null,"kind":"章","number":5,"sub":0,"title":"附則","level":2,"heading":"第五章 附則"}],"articles":[{"id":11,"number":1,"sub":0,"label":"第 1 條","label_chinese":"第一條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"為規範個人資料之蒐集、處理及利用，保障人格權益，特制定本法。","paragraphs":[{"index":1,"text":"為規範個人資料之蒐集、處理及利用，保障人格權益，特制定本法。","items":[]}],"tags":[],"note":"","refs":[]},{"id":12,"number":2,"sub":0,"label":"第 2 條","label_chinese":"第二條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"本法用詞，定義如下：\n一、個人資料：指自然人之姓名、出生年月日、聯絡方式及其他得以直接或間接識別該個人之資料。\n二、蒐集：指以任何方式取得個人資料。\n三、處理：指為建立或利用個人資料檔案所為之紀錄、輸入、儲存、編輯、更正、複製、檢索、刪除、輸出、連結或內部傳送。\n四、當事人：指個人資料之本人。\n五、國際傳輸：指將個人資料作跨國（境）之處理或利用。","paragraphs":[{"index":1,"text":"本法用詞，定義如下：","items":[{"kind":"款","label":"一、","text":"個人資料：指自然人之姓名、出生年月日、聯絡方式及其他得以直接或間接識別該個人之資料。","children":[]},{"kind":"款","label":"二、","text":"蒐集：指以任何方式取得個人資料。","children":[]},{"kind":"款","label":"三、","text":"處理：指為建立或利用個人資料檔案所為之紀錄、輸入、儲存、編輯、更正、複製、檢索、刪除、輸出、連結或內部傳送。","children":[]},{"kind":"款","label":"四、","text":"當事人：指個人資料之本人。","children":[]},{"kind":"款","label":"五、","text":"國際傳輸：指將個人資料作跨國（境）之處理或利用。","children":[]}]}],"tags":[],"note":"","refs":[]},{"id":13,"number":3,"sub":0,"label":"第 3 條","label_chinese":"第三條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"本法之主管機關如下：\n一、在中央：為數位發展主管機關。\n二、在地方：\n（一）直轄市：為直轄市政府。\n（二）縣（市）：為縣（市）政府。\n第 二 章 蒐集、處理及利用","paragraphs":[{"index":1,"text":"本法之主管機關如下：","items":[{"kind":"款","label":"一、","text":"在中央：為數位發展主管機關。","children":[]},{"kind":"款","label":"二、","text":"在地方：","children":[{"kind":"目","label":"（一）","text":"直轄市：為直轄市政府。","children":[]},{"kind":"目","label":"（二）","text":"縣（市）：為縣（市）政府。","children":[]}]}]},{"index":2,"text":"第 二 章 蒐集、處理及利用","items":[]}],"tags":[],"note":"","refs":[]},{"id":14,"number":5,"sub":0,"label":"第 5 條","label_chinese":"第五條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"個人資料之蒐集、處理或利用，應尊重當事人之權益，依誠實及信用方法為之，不得逾越特定目的之必要範圍，並應與蒐集之目的具有正當合理之關聯。","paragraphs":[{"index":1,"text":"個人資料之蒐集、處理或利用，應尊重當事人之權益，依誠實及信用方法為之，不得逾越特定目的之必要範圍，並應與蒐集之目的具有正當合理之關聯。","items":[]}],"tags":[],"note":"","refs":[]},{"id":15,"number":6,"sub":0,"label":"第 6 條","label_chinese":"第六條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"蒐集個人資料，應向當事人告知下列事項：\n一、蒐集之目的。\n二、個人資料之類別。\n三、利用之期間、地區、對象及方式。\n四、當事人得行使之權利及方式。\n五、當事人得自由選擇提供個人資料時，不提供將對其權益之影響。","paragraphs":[{"index":1,"text":"蒐集個人資料，應向當事人告知下列事項：","items":[{"kind":"款","label":"一、","text":"蒐集之目的。","children":[]},{"kind":"款","label":"二、","text":"個人資料之類別。","children":[]},{"kind":"款","label":"三、","text":"利用之期間、地區、對象及方式。","children":[]},{"kind":"款","label":"四、","text":"當事人得行使之權利及方式。","children":[]},{"kind":"款","label":"五、","text":"當事人得自由選擇提供個人資料時，不提供將對其權益之影響。","children":[]}]}],"tags":[],"note":"","refs":[]},{"id":16,"number":7,"sub":0,"label":"第 7 條","label_chinese":"第七條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"有下列情形之一者，得免為前條之告知：\n一、依法律規定得免告知。\n二、為免除當事人之生命、身體、自由或財產上之危險。\n三、告知將妨害公務機關執行法定職務。","paragraphs":[{"index":1,"text":"有下列情形之一者，得免為前條之告知：","items":[{"kind":"款","label":"一、","text":"依法律規定得免告知。","children":[]},{"kind":"款","label":"二、","text":"為免除當事人之生命、身體、自由或財產上之危險。","children":[]},{"kind":"款","label":"三、","text":"告知將妨害公務機關執行法定職務。","children":[]}]}],"tags":[],"note":"","refs":[]},{"id":17,"number":8,"sub":0,"label":"第 8 條","label_chinese":"第八條","division_seq":0,"division_path":"第一章 總則","is_deleted":false,"text":"公務機關保有個人資料檔案者，應指定專人辦理安全維護事項，防止個人資料被竊取、竄改、毀損、滅失或洩漏。\n非公務機關準用前項規定。","paragraphs":[{"index":1,"text":"公務機關保有個人資料檔案者，應指定專人辦理安全維護事項，防止個人資料被竊取、竄改、毀損、滅失或洩漏。","items":[]},{"index":2,"text":"非公務機關準用前項規定。","items":[]}],"tags":[],"note":"","refs":[]},{"id":18,"number":9,"sub":0,"label":"第 9 條","label_chinese":"第九條","division_seq":0,"division_path":"第一章 總則","is_deleted":true,"text":"（刪除）","paragraphs":[],"tags":[],"note":"","refs":[]},{"id":19,"number":10,"sub":0,"label":"第 10 條","label_chinese":"第十條","division_seq":1,"division_path":"第三章 當事人權利","is_deleted":false,"text":"當事人就其個人資料得行使下列權利：\n一、查詢或請求閱覽。\n二、請求製給複製本。\n三、請求補充或更正。\n四、請求停止蒐集、處理或利用。\n五、請求刪除。\n前項權利，不得預先拋棄或以特約限制之。","paragraphs":[{"index":1,"text":"當事人就其個人資料得行使下列權利：","items":[{"kind":"款","label":"一、","text":"查詢或請求閱覽。","children":[]},{"kind":"款","label":"二、","text":"請求製給複製本。","children":[]},{"kind":"款","label":"三、","text":"請求補充或更正。","children":[]},{"kind":"款","label":"四、","text":"請求停止蒐集、處理或利用。","children":[]},{"kind":"款","label":"五、","text":"請求刪除。","children":[]}]},{"index":2,"text":"前項權利，不得預先拋棄或以特約限制之。","items":[]}],"tags":[],"note":"","refs":[]},{"id":20,"number":11,"sub":0,"label":"第 11 條","label_chinese":"第十一條","division_seq":1,"division_path":"第三章 當事人權利","is_deleted":false,"text":"非公務機關受理當事人依第十條所為之請求，應於三十日內為准駁之決定；必要時得予延長，延長之期間不得逾三十日。","paragraphs":[{"index":1,"text":"非公務機關受理當事人依第十條所為之請求，應於三十日內為准駁之決定；必要時得予延長，延長之期間不得逾三十日。","items":[]}],"tags":[],"note":"","refs":[{"relation":"依據","target_law":null,"target_article":10,"target_sub":0,"target_paragraph":null,"raw_text":"第十條","to_article_id":19}]},{"id":21,"number":11,"sub":1,"label":"第 11-1 條","label_chinese":"第十一條之一","division_seq":1,"division_path":"第三章 當事人權利","is_deleted":false,"text":"當事人依第十條第一項第五款請求刪除者，非公務機關應同時通知其委託處理個人資料之第三人。\n前項通知之方式及程序，準用第十一條之規定。","paragraphs":[{"index":1,"text":"當事人依第十條第一項第五款請求刪除者，非公務機關應同時通知其委託處理個人資料之第三人。","items":[]},{"index":2,"text":"前項通知之方式及程序，準用第十一條之規定。","items":[]}],"tags":[],"note":"","refs":[{"relation":"依據","target_law":null,"target_article":10,"target_sub":0,"target_paragraph":1,"raw_text":"第十條第一項第五款","to_article_id":19},{"relation":"準用","target_law":null,"target_article":11,"target_sub":0,"target_paragraph":null,"raw_text":"第十一條","to_article_id":20}]},{"id":22,"number":15,"sub":0,"label":"第 15 條","label_chinese":"第十五條","division_seq":2,"division_path":"第四章 損害賠償及罰則","is_deleted":false,"text":"違反本法規定，致當事人受損害者，應負損害賠償責任。但能證明其無故意或過失者，不在此限。\n損害賠償之請求，適用民法第一百九十七條之規定。","paragraphs":[{"index":1,"text":"違反本法規定，致當事人受損害者，應負損害賠償責任。但能證明其無故意或過失者，不在此限。","items":[]},{"index":2,"text":"損害賠償之請求，適用民法第一百九十七條之規定。","items":[]}],"tags":[],"note":"","refs":[{"relation":"適用","target_law":"民法","target_article":197,"target_sub":0,"target_paragraph":null,"raw_text":"適用民法第一百九十七條","to_article_id":null}]},{"id":23,"number":16,"sub":0,"label":"第 16 條","label_chinese":"第十六條","division_seq":2,"division_path":"第四章 損害賠償及罰則","is_deleted":false,"text":"違反第五條至第八條規定者，由主管機關處新臺幣五萬元以上五十萬元以下罰鍰，並令其限期改正；屆期未改正者，按次處罰。","paragraphs":[{"index":1,"text":"違反第五條至第八條規定者，由主管機關處新臺幣五萬元以上五十萬元以下罰鍰，並令其限期改正；屆期未改正者，按次處罰。","items":[]}],"tags":[],"note":"","refs":[{"relation":"處罰","target_law":null,"target_article":5,"target_sub":0,"target_paragraph":null,"raw_text":"第五條至第八條","to_article_id":14},{"relation":"處罰","target_law":null,"target_article":6,"target_sub":0,"target_paragraph":null,"raw_text":"第五條至第八條","to_article_id":15},{"relation":"處罰","target_law":null,"target_article":7,"target_sub":0,"target_paragraph":null,"raw_text":"第五條至第八條","to_article_id":16},{"relation":"處罰","target_law":null,"target_article":8,"target_sub":0,"target_paragraph":null,"raw_text":"第五條至第八條","to_article_id":17}]},{"id":24,"number":17,"sub":0,"label":"第 17 條","label_chinese":"第十七條","division_seq":2,"division_path":"第四章 損害賠償及罰則","is_deleted":true,"text":"（刪除）","paragraphs":[],"tags":[],"note":"","refs":[]},{"id":25,"number":18,"sub":0,"label":"第 18 條","label_chinese":"第十八條","division_seq":2,"division_path":"第四章 損害賠償及罰則","is_deleted":false,"text":"違反第十一條之一第一項規定者，由主管機關令其限期改正；屆期未改正者，處新臺幣二萬元以上十萬元以下罰鍰。","paragraphs":[{"index":1,"text":"違反第十一條之一第一項規定者，由主管機關令其限期改正；屆期未改正者，處新臺幣二萬元以上十萬元以下罰鍰。","items":[]}],"tags":[],"note":"","refs":[{"relation":"引用","target_law":null,"target_article":11,"target_sub":1,"target_paragraph":1,"raw_text":"第十一條之一第一項","to_article_id":21}]},{"id":26,"number":20,"sub":0,"label":"第 20 條","label_chinese":"第二十條","division_seq":3,"division_path":"第五章 附則","is_deleted":false,"text":"本法施行細則，由主管機關定之。","paragraphs":[{"index":1,"text":"本法施行細則，由主管機關定之。","items":[]}],"tags":[],"note":"","refs":[]},{"id":27,"number":21,"sub":0,"label":"第 21 條","label_chinese":"第二十一條","division_seq":3,"division_path":"第五章 附則","is_deleted":false,"text":"本法自公布日施行。","paragraphs":[{"index":1,"text":"本法自公布日施行。","items":[]}],"tags":[],"note":"","refs":[]}],"stats":{"articles":17,"deleted":2,"divisions":4,"references":9,"average_length":67.0,"longest":{"label":"第 2 條","length":174}}}],"tags":[],"bookmarks":[],"kind":"lawkit-bundle","bundle_version":1};</script>
+<script type="module">
 /* 法規整理 App
  *
  * 資料來源有兩種，會自動切換：
@@ -1342,3 +1775,7 @@ async function boot() {
 }
 
 boot();
+
+</script>
+</body>
+</html>

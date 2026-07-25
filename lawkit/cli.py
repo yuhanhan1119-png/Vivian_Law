@@ -504,6 +504,29 @@ def cmd_bundle(args: argparse.Namespace) -> int:
     return 0
 
 
+def _configure_standalone(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--out", "-o", default="", help="輸出的 HTML 檔案（預設放在 exports 資料夾）")
+    parser.add_argument("--title", default="", help="自訂網頁標題")
+
+
+@command("standalone", "產生單檔 App（一個 HTML，雙擊即可用、可分享）", _configure_standalone)
+def cmd_standalone(args: argparse.Namespace) -> int:
+    from .standalone import write_single_file
+
+    workspace, store = open_store(args)
+    if not store.list_laws():
+        store.close()
+        raise SystemExit("知識庫是空的，請先執行 law import 匯入法規。")
+
+    target = Path(args.out).expanduser() if args.out else workspace.exports_dir / "法規整理-單檔版.html"
+    write_single_file(store, target, title=args.title)
+    size = target.stat().st_size / 1024
+    store.close()
+    echo(f"已產生單檔 App：{target}（{size:.0f} KB）")
+    echo("雙擊即可在瀏覽器開啟；不需要 Python、不需要網路，也可以直接傳給別人。")
+    return 0
+
+
 @command("stats", "統計整體知識庫")
 def cmd_stats(args: argparse.Namespace) -> int:
     workspace, store = open_store(args)
